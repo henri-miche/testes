@@ -32,7 +32,12 @@ export default () => {
                 if (user) {
                    
 
-                    navigation.navigate('Gerencial',{instituicao:instituicao});
+                   navigation.reset({
+
+                        routes: [{name: 'Gerencial'}]
+
+                            },{instituicao:instituicao});
+
                 }
             });
             /*conexao firebase cadastro*/
