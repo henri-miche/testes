@@ -1,9 +1,14 @@
-import React, {useEffect, useState}from 'react';
+import firebase from '../../Connection/Firebase';
+
+import * as React from 'react'
+import {useEffect, useState}from 'react';
 import {Picker} from '@react-native-picker/picker';
 import { Button, Modal, SafeAreaView,Text, View } from 'react-native';
 import { useNavigation,useRoute } from '@react-navigation/native';
-import InputName from "../../Components/InputName"
-import firebase from '../../Connection/Firebase';
+import InputName from "../../Components/InputName";
+
+import PDFReader from 'rn-pdf-reader-js';
+import { WebView } from 'react-native-webview';
 import { Container,
 BtnInstituição
 } from './styles';
@@ -28,6 +33,25 @@ export default () => {
           const [moduloy,setModuloy] = useState();
            const [moduloz,setModuloz] = useState();
           const [moduloh,setModuloh] = useState();
+          const [avatar2,setAvatar2] = useState(null);  
+
+        const buscarFotos = () => {
+        const storage = firebase.storage();
+        const starsRef = storage.ref('pdf/').child('OCORRENCIATESTE.pdf');
+    
+        starsRef.getDownloadURL().then(function (url) {
+            let avatar1 = { uri: url };
+            let avatar3 = avatar1;
+            setAvatar2(avatar3);
+            console.log(avatar2);
+        }).catch((error) => {
+        if (error.code === 'storage/object-not-found'){
+            
+        }
+        });
+    }
+
+
 
      
           const Logout  = () => {
@@ -48,8 +72,7 @@ export default () => {
                 const json = await req.toJSON();
                 setUsuario(json.nome);
                 setSetor(json.setor);
-                console.log(json.nome)
-                console.log(json.setor)
+                
                
                const reqModulos = await firebase.database().ref('Permissoes').child(user.uid).once('value');
                const resModulos = await reqModulos.toJSON();
@@ -57,53 +80,34 @@ export default () => {
                setModuloy(resModulos.moduloy)
                setModuloh(resModulos.moduloh)
                setModuloz(resModulos.moduloz)
-                console.log(resModulos.moduloy)
+                
                 }
               }
 
+              
+
               useEffect(()=>{
+                 buscarFotos();
                   poolPermissions();
+                 
               },[]) 
 
     return (
-        <Container >
-           {modulox &&
-            <View style ={{width:100,height:100,backgroundColor:'#fff',marginBottom:10}}>
-              <Text>Módulo xxxx</Text>
-            </View>
-           
-           }
+        
 
-           {moduloy &&
-           <View style ={{width:100,height:100,backgroundColor:'#fff',marginBottom:10}}>
-              <Text>Módulo yyyy</Text>
-            </View>
-           
-           }
-
-           {moduloz &&
-           <View style ={{width:100,height:100,backgroundColor:'#fff',marginBottom:10}}>
-              <Text>Módulo zzzzzzz</Text>
-            </View>
-           
-           }
-
-           {moduloh &&
-           <View style ={{width:100,height:100,backgroundColor:'#fff',marginBottom:10}}>
-              <Text>Módulo hhhhh</Text>
-            </View>
-           
-           }
-           <Text style={{color:'#fff'}}>{usuario}</Text>
-            <Text style={{color:'#fff'}}>{setor} {instituicao}</Text>
-
+       
+           <PDFReader
+        source={
+            avatar2
+  }
+      />
+     
+          
 
            
 
-           <Button title='Logout' onPress ={Logout} />
-
-           
-
-        </Container>
+        
     );
 }
+
+/* */

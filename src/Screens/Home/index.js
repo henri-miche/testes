@@ -15,17 +15,16 @@ BtnInstituição
 export default () => {
 
     const navigation = useNavigation();
-    const [senhaField,setSenhaField] = useState();
+    const [senhaField,setSenhaField] = useState('');
      const [instituicao,setInstituicao] = useState('AC');
-      const [emailField,setEmailField] = useState();
-      const [usuario,setUsuario] = useState();
-      const [permissao,setPermissao] = useState();
+      const [emailField,setEmailField] = useState('');
+      
 
-    firebase.auth().signOut();
+    
     
    const handleSignClic = () => {
 
-        if (emailField != '' && senhaField != '') {
+        if(emailField != '' && senhaField != '') {
 
             /*função ouvinte a ser passada para sistemaconect*/
             firebase.auth().onAuthStateChanged((user) => {
@@ -34,9 +33,9 @@ export default () => {
 
                    navigation.reset({
 
-                        routes: [{name: 'Gerencial'}]
+                        routes: [{name: 'Gerencial',params:{instituicao:instituicao} }]
 
-                            },{instituicao:instituicao});
+                            });
 
                 }
             });
